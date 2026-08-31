@@ -1,0 +1,1 @@
+import{r as t}from"./_plugin-vue_export-helper--hSkCnSO.js";const r=()=>t.get("/menu/user"),s=()=>t.get("/menu/tree"),o=e=>t.post("/menu",e),a=e=>t.put("/menu",e),m=e=>t.delete(`/menu/${e}`),c=e=>t.get(`/menu/role/${e}`),g=(e,n)=>t.post(`/menu/role/${e}`,{menuIds:n});export{g as a,s as b,c,o as d,m as e,r as g,a as u};

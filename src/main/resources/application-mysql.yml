@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: hoyozero-deploy
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hoyozero_deploy?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+server:
+  port: 8080
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Sa-Token配置
+sa-token:
+  token-name: Authorization
+  timeout: 3600
+  active-timeout: 3600
+  is-concurrent: true
+  is-share: true
+  token-style: random-64
+  is-log: false
+
+# 应用配置
+hoyozero:
+  # 工作目录 (不设置则使用默认目录：Windows: D:\hoyozero-deploy, Linux: /home/hoyozero-deploy)
+  workspace: C:\hoyozero-deploy\deploy
+  # Git克隆超时时间（秒）
+  git-timeout: 300
+  # 构建超时时间（秒）
+  build-timeout: 600
+  # 线程池大小
+  executor-pool-size: 5
+  # 构建完成后是否保留工作目录 (true:保留, false:清理)
+  keep-workspace: false

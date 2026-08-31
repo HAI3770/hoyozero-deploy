@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: mysql
+
+hoyozero:
+  workspace: /home/hoyozero-deploy
+  git-timeout: 300
+  build-timeout: 600
+  executor-pool-size: 5
+  keep-workspace: false
+  webhook:
+    secret: ""
+    callback-url: ""
+    callback-secret: ""

@@ -1,0 +1,22 @@
+target/
+workspace/
+*.log
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Node
+node_modules/
+dist/
+*.local
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+.env

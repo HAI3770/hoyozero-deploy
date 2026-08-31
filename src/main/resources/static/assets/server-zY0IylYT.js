@@ -1,0 +1,1 @@
+import{r}from"./_plugin-vue_export-helper-CfcfVFkM.js";const s=e=>r.get("/server/list",{params:e}),n=e=>r.post("/server",e),o=e=>r.put("/server",e),v=e=>r.delete(`/server/${e}`),a=e=>r.post(`/server/test/${e}`),u=e=>r.get(`/server/monitor/${e}`);export{n as a,u as b,v as d,s as g,a as t,o as u};
