@@ -1,414 +1,179 @@
-# hoyozero-deploy - 轻量级 CICD 自动化部署平台
+# hoyozero-deploy
 
-<p align="center">
-  <img src="doc/image/首页.png" alt="hoyozero-deploy 首页" width="800">
-</p>
+轻量、可自托管的 CI/CD 自动化部署平台。
 
-## 项目简介
+hoyozero-deploy 面向需要自行管理代码构建、服务器部署和发布过程的团队。平台提供 Web 管理界面，支持项目配置、构建任务、部署发布、服务器管理、实时日志和权限控制。
 
-hoyozero-deploy 是一套面向 Java / Vue 项目的轻量级 CI/CD 自动化部署平台，支持代码拉取、项目构建、产物上传、远程部署和实时日志查看。
+## 功能概览
 
-## 主要功能
+- 项目管理：配置 Git 仓库、分支、构建命令和部署目标
+- 自动构建：支持 Java、Vue 等常见项目的构建流程
+- 持续交付：管理发布单、部署阶段、任务状态和失败原因
+- 服务器管理：SSH 连接测试、Web 控制台、文件管理和系统监控
+- 构建日志：查看构建过程、产物和历史记录
+- 插件市场：安装常用基础环境和中间件
+- 权限管理：用户、角色和菜单权限
+- 界面体验：响应式 Web 界面、亮色/暗色主题和全屏操作
+- 可选智能助手：通过 Dify 接入 CI/CD 智能体
 
-- ✨ **文件管理**：支持服务器文件浏览、上传、下载、删除等操作
-- 📊 **服务器监控**：新增服务器监控面板，实时查看 CPU、内存、磁盘、网络等统计信息
-- 📈 **可视化图表**：监控面板采用 ECharts 仪表盘图表，数据展示更直观
-- 🖥️ **全屏模式**：SSH 控制台和监控面板均支持全屏展示
-- 🔄 **交互优化**：监控面板支持手动刷新，操作更灵活
-- 🎨 **主题切换**：支持亮色/暗黑模式自由切换，优化视觉体验
-- 🔌 **插件市场**：一键安装基础环境和常用中间件
-- 📡 **实时日志**：插件安装/卸载过程 WebSocket 实时日志推送
-- ♻️ **失败重试**：支持安装失败后重新安装，自动清理失败记录
+## 技术栈
 
-## 系统架构
+- 前端：Vue 3、Vite、Naive UI、ECharts、xterm.js
+- 后端：Spring Boot 3、MyBatis-Plus、Sa-Token
+- 数据库：MySQL 8.0
+- 缓存：Redis 7
+- 构建与运行：Docker、Docker Compose、Maven、Node.js
+- 通信：HTTP、WebSocket、SSH/SFTP
 
-- **前端**：Vue 3、Vite、Naive UI、ECharts、xterm.js
-- **后端**：Spring Boot 3、MyBatis-Plus、Sa-Token
-- **数据库**：MySQL 8.0
-- **通信与工具**：WebSocket、JGit、JSch、Hutool
+## 运行要求
 
-Docker Compose 会启动 MySQL、Spring Boot 后端和 Nginx 前端三个服务。前端通过 `30080` 端口提供访问入口，后端和数据库通过 Compose 内部网络通信。
+- Linux 服务器
+- Docker 20 或更高版本
+- Docker Compose v2（使用 `docker compose` 命令）
+- 至少 2 GB 可用内存；构建大型项目时建议提供更多资源
+- 一个可用的 Git 仓库和部署目标服务器
 
-## 核心功能
+宿主机不需要单独安装 Java、Node.js 或 MySQL；这些运行依赖由构建流程和 Docker 服务负责。部署目标服务器需要根据实际项目安装对应的运行环境。
 
-### 1. 登录权限
-- JWT / Sa-Token 鉴权
-- 用户权限控制
-- 角色管理
+## 快速部署
 
-### 2. 项目管理
-<p align="center">
-  <img src="doc/image/项目管理.png" alt="项目管理" width="800">
-</p>
-
-- 项目新增/编辑
-- Git 地址配置
-- 分支管理
-- 构建命令配置（mvn / npm）
-- 产物路径配置
-- 绑定服务器
-- 多服务器部署支持
-
-### 3. 构建任务管理
-<p align="center">
-  <img src="doc/image/构建历史.png" alt="构建历史" width="800">
-</p>
-
-- 一键触发构建
-- 构建队列
-- 实时日志 WebSocket
-- 构建结果记录
-- 构建历史列表
-
-<p align="center">
-  <img src="doc/image/构建历史详情.png" alt="构建详情" width="800">
-</p>
-
-### 4. 服务器管理
-<p align="center">
-  <img src="doc/image/服务器管理.png" alt="服务器管理" width="800">
-</p>
-
-- 主机管理
-- SSH 连接测试
-- SSH Web 控制台
-- 部署目录
-- 停止、启动命令
-- 密码/SSH Key 登录
-- 服务器监控面板（CPU、内存、磁盘、网络）
-
-### 5. SSH Web 控制台
-<p align="center">
-  <img src="doc/image/控制台.png" alt="SSH控制台" width="800">
-</p>
-
-- 基于 xterm.js 实现
-- 支持全屏模式
-- 实时交互操作
-- 类似 XShell 的使用体验
-
-### 6. 文件管理
-<p align="center">
-  <img src="doc/image/文件管理.png" alt="文件管理" width="800">
-</p>
-
-- 服务器文件浏览
-- 文件上传/下载
-- 文件删除
-- 目录切换
-- SFTP 协议传输
-
-### 7. 插件市场
-<p align="center">
-  <img src="doc/image/插件市场.png" alt="插件市场" width="800">
-</p>
-
-- 一键安装基础环境（Git、JDK、Node.js、Docker、Python、Maven）
-- 一键安装中间件（Nginx、MySQL、Redis、MongoDB）
-- 实时安装日志推送
-- 安装状态管理
-- 失败重试机制
-
-### 8. 自动化部署流程
-- Git 自动拉取
-- 自动构建（Java / Vue）
-- 产物收集
-- SFTP 上传
-- 执行部署脚本
-- 状态回写
-
-## 快速开始
-
-### 环境要求
-
-- Docker 20+
-- Docker Compose v2（命令格式为 `docker compose`）
-- Git（用于获取项目代码）
-- Linux 服务器建议至少 2 GB 可用内存
-- 服务器开放 `30080` 端口（Web 访问）
-
-> 使用 Docker 部署时，JDK、Node.js、Maven 和 MySQL 都会在容器中准备，不需要在宿主机单独安装。
-
-### Docker 部署
-
-#### 1. 获取项目
+### 1. 获取代码
 
 ```bash
-git clone https://github.com/HAI3770/hoyozero-deploy.git
+git clone <你的 GitHub 或 Gitee 仓库地址>
 cd hoyozero-deploy
 ```
 
-#### 2. 配置数据库密码
+如果从 Gitee 获取，请将仓库地址替换为对应的 Gitee 地址。
 
-在项目根目录创建 `.env` 文件：
+### 2. 创建本地配置
 
-```bash
-cat > .env <<'EOF'
-HOYOZERO_DB_ROOT_PASSWORD=请替换为一个强密码
-EOF
+`.env` 只保存在部署服务器上，不要提交到 Git：
+
+```dotenv
+HOYOZERO_DB_ROOT_PASSWORD=请填写强密码
+HOYOZERO_RUNNER_TOKEN=请填写随机令牌
+
+# 可选：接入 Dify 智能助手
+DIFY_BASE_URL=http://your-dify-host:8060
+DIFY_API_KEY=
+DIFY_APP_ID=
+
+# 可选：私有镜像仓库
+REGISTRY_USERNAME=
+REGISTRY_TOKEN=
 ```
 
+请使用强密码和随机令牌，并通过服务器 Secret、环境变量或权限严格的 `.env` 文件管理敏感配置。
 
-检查 Docker 是否可用：
-
-```bash
-docker --version
-docker compose version
-```
-
-#### 3. 构建并启动
+### 3. 构建并启动
 
 ```bash
 docker compose up --build -d
-```
-
-查看容器状态：
-
-```bash
 docker compose ps
 ```
 
-查看后端日志：
+看到 `mysql`、`redis`、`backend`、`runner`、`frontend` 均为 `running`，且健康检查通过后即可访问：
 
-```bash
-docker compose logs -f backend
+```text
+http://服务器IP:30080/
 ```
 
-访问地址：`http://服务器IP:30080`
-
-默认账号：
-
-- 用户名：admin
-- 密码：123456
-
-#### 4. 停止和更新
-
-停止服务：
+### 4. 常用运维命令
 
 ```bash
+# 查看全部日志
+docker compose logs -f
+
+# 查看单个服务日志
+docker compose logs -f backend
+
+# 更新代码并重新构建
+git pull
+docker compose up --build -d
+
+# 停止服务
 docker compose down
 ```
 
-更新代码并重新构建：
+`docker compose down` 默认不会删除 `/data/hoyozero-deploy` 下的数据库和工作目录数据。删除数据前请先完成备份，并确认删除范围。
 
-```bash
-git pull
-docker compose up --build -d
-```
+## 数据目录
 
-#### 5. 数据目录
-
-Docker 部署会在宿主机使用以下目录保存数据：
+默认数据目录如下：
 
 - `/data/hoyozero-deploy/mysql`：MySQL 数据
-- `/data/hoyozero-deploy/workspace`：项目构建工作目录
+- `/data/hoyozero-deploy/redis`：Redis 持久化数据
+- `/data/hoyozero-deploy/workspace`：构建工作目录和产物
 
-删除容器不会删除这些目录。首次启动时会自动创建数据库和表结构；如果 MySQL 数据目录已经存在，初始化 SQL 不会再次执行。
+建议定期备份数据库和重要构建产物。数据库映射端口仅用于维护时访问，生产环境建议移除公网暴露或限制为内网访问。
 
+## 使用流程
 
-查看全部服务日志：
+1. 登录 Web 管理端并修改管理员密码。
+2. 在“服务器管理”中添加部署目标，先执行连接测试。
+3. 在“项目管理”中配置 Git 地址、分支、构建命令和产物路径。
+4. 关联部署服务器，确认部署目录和启动脚本。
+5. 手动触发构建，检查构建日志和产物。
+6. 创建发布或执行部署，确认部署后的健康检查结果。
 
-```bash
-docker compose logs -f
-```
+不同项目的构建命令和启动方式不同，请根据项目实际情况填写，不要直接照搬示例配置。
 
-如果服务器启用了防火墙，请放行 `30080` 端口。`3308` 是 MySQL 映射端口，建议删除公网映射或仅允许本机、内网访问。
+## 智能助手
 
-备份数据库示例：
+智能助手为可选功能。启用前需要准备可访问的 Dify 服务，并在 `.env` 中配置 Dify 地址和必要的应用信息。未配置 Dify 时，平台的项目、构建和部署核心功能仍可独立运行。
 
-```bash
-docker compose exec mysql mysqldump -uroot -p hoyozero_deploy > hoyozero_deploy_backup.sql
-```
+不要把 Dify API Key、Git Token、镜像仓库 Token、SSH 私钥或服务器密码写入源码、README、截图或提交记录。
 
-> 执行备份命令时会提示输入 `.env` 中配置的数据库密码。生产环境请修改默认管理员密码，并妥善保管 `.env` 文件。
+## 安全说明
+
+- `.env`、私钥、Token、密码和数据库备份禁止提交到公开仓库。
+- 首次登录后立即修改管理员密码。
+- 仅向可信网络开放 Web、SSH 和必要的服务端口。
+- backend/runner 使用 Docker Socket 时拥有较高宿主机权限，建议部署在隔离节点，并限制可执行项目和用户权限。
+- 生产环境建议在前置网关启用 HTTPS、访问控制、审计和备份。
+- 发布前请检查 Git 历史；文件后来加入 `.gitignore` 不能自动清除历史中的敏感信息。
 
 ## 目录结构
 
-```
-hoyozero-deploy/
-├── src/                        # 后端源码
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/hoyozero/deploy/
-│   │   │       ├── config/     # 配置类
-│   │   │       ├── controller/ # 控制器
-│   │   │       ├── entity/     # 实体类
-│   │   │       ├── mapper/     # Mapper
-│   │   │       ├── service/    # 服务层
-│   │   │       ├── utils/      # 工具类
-│   │   │       └── websocket/  # WebSocket
-│   │   └── resources/
-│   │       ├── db/             # 数据库脚本和 SQLite 数据文件
-│   │       └── application.yml # 配置文件
-├── web/                        # 前端源码
-│   ├── src/
-│   │   ├── api/                # API接口
-│   │   ├── router/             # 路由
-│   │   ├── views/              # 页面
-│   │   ├── App.vue
-│   │   └── main.js
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── Dockerfile                  # Docker 镜像
-├── docker-compose.yml          # Docker Compose
-├── nginx.conf                  # Nginx 配置
-└── pom.xml                     # Maven 配置
+```text
+.
+├── src/                 # Spring Boot 后端源码
+├── web/                 # 管理端前端源码
+├── website/             # hoyozero 宏宇项目介绍页
+├── runner/              # 构建 runner
+├── doc/                 # 数据库脚本和界面截图
+├── Dockerfile           # 后端镜像
+├── Dockerfile.frontend  # 前端镜像
+├── docker-compose.yml   # 服务编排
+├── nginx.conf           # 前端 Nginx 配置
+└── pom.xml              # Maven 配置
 ```
 
-## 技术选型
+## 开发调试
 
-### 后端
-- Spring Boot 3.0.5
-- MyBatis-Plus 3.5.5
-- Sa-Token 1.37.0
-- JGit 6.8.0
-- JSch 0.2.16
-- Hutool 5.8.25
-- WebSocket（实时日志推送）
+后端：
 
-### 前端
-- Vue 3.4.0
-- Vite 5.0.0
-- Naive UI 2.38.0
-- ECharts 5.4.0
-- Axios 1.6.2
-- xterm.js 5.3.0
-- @vicons/ionicons5 0.12.0
+```bash
+mvn spring-boot:run
+```
 
-## 使用说明
+管理端前端：
 
-### 1. 添加服务器
+```bash
+cd web
+npm install
+npm run dev
+```
 
-进入"服务器管理"，点击"新增服务器"，填写服务器信息：
-- 服务器名称
-- 主机地址和端口
-- 用户名和密码（或 SSH Key）
-- 上传目录
-- 启动/停止命令
+官网：
 
-点击"测试连接"确保服务器可以正常连接。
+```bash
+cd website
+npm install
+npm run dev
+```
 
-### 2. 创建项目
+## 许可证与品牌
 
-进入"项目管理"，点击"新增项目"，填写项目信息：
-- 项目名称
-- Git 地址和分支
-- Git 认证信息（如需要）
-- 项目类型（Java/Vue）
-- 构建命令（如：mvn clean package -DskipTests）
-- 产物路径（如：target/*.jar）
-- 选择部署服务器（支持多选）
-
-### 3. 触发构建
-
-在项目列表中点击"触发构建"，系统将自动：
-1. 拉取 Git 代码
-2. 执行构建命令
-3. 收集构建产物
-4. 上传到服务器
-5. 执行部署脚本
-
-### 4. 查看日志
-
-点击"查看详情"可以实时查看构建日志，通过 WebSocket 实时推送。
-
-### 5. 服务器监控
-
-在服务器管理页面，点击"监控面板"按钮：
-- 实时查看 CPU 使用率（仪表盘图表）
-- 实时查看内存使用情况
-- 实时查看磁盘空间占用
-- 查看网络流量统计
-- 查看系统信息、进程数、负载均值等
-- 支持手动刷新数据
-- 支持全屏展示
-
-### 6. 文件管理
-
-在文件管理页面，可以：
-- 浏览服务器文件系统
-- 上传本地文件到服务器
-- 下载服务器文件到本地
-- 删除服务器文件
-- 切换目录
-
-### 7. SSH 控制台
-
-在服务器管理页面，点击"控制台"按钮：
-- 打开 Web SSH 终端
-- 执行 Linux 命令
-- 支持全屏模式
-- 类似 XShell 的操作体验
-
-### 8. 插件市场
-
-在插件市场页面，可以：
-- 一键安装开发环境（Git、JDK、Node.js 等）
-- 一键安装中间件（Nginx、MySQL、Redis 等）
-- 实时查看安装日志
-- 卸载已安装插件
-
-## 常见问题
-
-### 1. Git 克隆失败
-- 检查 Git 地址是否正确
-- 检查网络连接
-- 如果是私有仓库，需要配置认证信息
-
-### 2. SSH 连接失败
-- 检查服务器地址和端口
-- 检查用户名和密码
-- 检查防火墙设置
-- 确保服务器已安装 SSH 服务
-
-### 3. 构建失败
-- 检查构建命令是否正确
-- 检查项目依赖是否完整
-- 查看详细日志定位问题
-- 确保服务器有足够的磁盘空间
-
-### 4. 文件上传失败
-- 检查目标目录是否存在
-- 检查目录权限
-- 检查磁盘空间是否充足
-
-### 5. 监控数据获取失败
-- 确保服务器是 Linux 系统
-- 确保有足够的权限执行系统命令
-- 检查 SSH 连接是否正常
-
-## 功能特色
-
-✨ **一站式 CI/CD 解决方案**：从代码拉取到构建部署，全流程自动化
-
-📊 **实时监控**：服务器资源实时监控，性能一目了然
-
-🎨 **精美UI**：基于 Naive UI，支持亮色/暗黑主题切换
-
-🔌 **插件生态**：一键安装常用开发环境和中间件
-
-📁 **文件管理**：Web 端直接管理服务器文件
-
-🖥️ **Web终端**：浏览器内直接操作服务器
-
-📈 **数据可视化**：ECharts 图表展示构建趋势和监控数据
-
-🚀 **轻量高效**：Docker 一键部署，开箱即用
-
-## License
-
-MIT License
-
-## 作者
-
-👨‍💻 **hoyozero 宏宇**
-- 阿海
-
-## 联系方式
-
-如有问题，欢迎提 Issue 或 PR。
-
----
-
-⭐ 如果这个项目对你有帮助，欢迎 Star！
+项目品牌为 **hoyozero 宏宇**。发布前请根据实际仓库策略补充许可证文件和版权声明；如果以公开开源项目发布，建议在仓库根目录增加 `LICENSE` 文件。

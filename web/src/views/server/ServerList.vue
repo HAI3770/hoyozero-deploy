@@ -1,5 +1,8 @@
 <template>
   <div class="server-list">
+    <div class="page-header">
+      <div><h2>服务器管理</h2><span>管理部署目标、连接状态与运行资源</span></div>
+    </div>
     <div class="toolbar">
       <n-space>
         <n-input
@@ -946,6 +949,10 @@ onMounted(() => {
 .server-list {
   width: 100%;
 }
+
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.page-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.page-header span { color: var(--n-text-color-3); font-size: 13px; }
 
 .toolbar {
   margin-bottom: 16px;

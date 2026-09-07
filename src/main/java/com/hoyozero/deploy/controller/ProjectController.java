@@ -153,6 +153,21 @@ public class ProjectController {
         project.setAppPort(params.get("appPort") != null ? (Integer) params.get("appPort") : 8080);
         project.setEnv(params.get("env") != null ? (String) params.get("env") : "development");
         project.setGroupId(params.get("groupId") != null ? Long.valueOf(params.get("groupId").toString()) : null);
+        project.setDockerfilePath((String) params.getOrDefault("dockerfilePath", "Dockerfile"));
+        project.setDockerContext((String) params.getOrDefault("dockerContext", "."));
+        project.setRegistryUrl((String) params.get("registryUrl"));
+        project.setRegistryUsername((String) params.get("registryUsername"));
+        project.setRegistryToken((String) params.get("registryToken"));
+        project.setRegistryNamespace((String) params.get("registryNamespace"));
+        project.setImageName((String) params.get("imageName"));
+        project.setImageTagRule((String) params.getOrDefault("imageTagRule", "build-{buildNumber},git-{commit},latest,{env}-latest"));
+        project.setBuildPlatform((String) params.getOrDefault("buildPlatform", "linux/amd64"));
+        project.setAutoPush(params.get("autoPush") == null ? 1 : Integer.valueOf(params.get("autoPush").toString()));
+        project.setWebhookToken((String) params.get("webhookToken"));
+        project.setDeployEnabled(params.get("deployEnabled") == null ? 0 : Integer.valueOf(params.get("deployEnabled").toString()));
+        project.setComposePath((String) params.get("composePath"));
+        project.setComposeService((String) params.get("composeService"));
+        project.setHealthCheckUrl((String) params.get("healthCheckUrl"));
 
         projectService.save(project);
 
@@ -217,6 +232,12 @@ public class ProjectController {
         project.setDeployPath((String) params.get("deployPath"));
         project.setAppPort(params.get("appPort") != null ? (Integer) params.get("appPort") : 8080);
         project.setEnv(params.get("env") != null ? (String) params.get("env") : project.getEnv());
+        project.setDockerfilePath((String) params.get("dockerfilePath")); project.setDockerContext((String) params.get("dockerContext"));
+        project.setRegistryUrl((String) params.get("registryUrl")); project.setRegistryUsername((String) params.get("registryUsername")); project.setRegistryToken((String) params.get("registryToken"));
+        project.setRegistryNamespace((String) params.get("registryNamespace")); project.setImageName((String) params.get("imageName")); project.setImageTagRule((String) params.get("imageTagRule"));
+        project.setBuildPlatform((String) params.get("buildPlatform")); project.setAutoPush(params.get("autoPush") == null ? 1 : Integer.valueOf(params.get("autoPush").toString()));
+        project.setWebhookToken((String) params.get("webhookToken")); project.setDeployEnabled(params.get("deployEnabled") == null ? 0 : Integer.valueOf(params.get("deployEnabled").toString()));
+        project.setComposePath((String) params.get("composePath")); project.setComposeService((String) params.get("composeService")); project.setHealthCheckUrl((String) params.get("healthCheckUrl"));
         
         // 使用 UpdateWrapper 显式设置字段，支持 null 值更新
         com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper<Project> updateWrapper = 
@@ -237,6 +258,11 @@ public class ProjectController {
             .set("deploy_path", params.get("deployPath"))
             .set("app_port", params.get("appPort"))
             .set("env", params.get("env"));
+        updateWrapper.set("dockerfile_path", params.get("dockerfilePath")).set("docker_context", params.get("dockerContext"))
+            .set("registry_url", params.get("registryUrl")).set("registry_username", params.get("registryUsername")).set("registry_token", params.get("registryToken"))
+            .set("registry_namespace", params.get("registryNamespace")).set("image_name", params.get("imageName")).set("image_tag_rule", params.get("imageTagRule"))
+            .set("build_platform", params.get("buildPlatform")).set("auto_push", params.get("autoPush")).set("webhook_token", params.get("webhookToken"))
+            .set("deploy_enabled", params.get("deployEnabled")).set("compose_path", params.get("composePath")).set("compose_service", params.get("composeService")).set("health_check_url", params.get("healthCheckUrl"));
         
         // 处理项目组ID，允许清空
         if (params.containsKey("groupId")) {

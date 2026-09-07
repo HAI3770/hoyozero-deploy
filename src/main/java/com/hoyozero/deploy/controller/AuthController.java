@@ -1,6 +1,7 @@
 package com.hoyozero.deploy.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.SaLoginModel;
 import com.hoyozero.deploy.common.Result;
 import com.hoyozero.deploy.entity.LoginLog;
 import com.hoyozero.deploy.entity.User;
@@ -46,7 +47,8 @@ public class AuthController {
         }
         
         // 登录
-        StpUtil.login(user.getId());
+        SaLoginModel loginModel = new SaLoginModel().setTimeout(Boolean.TRUE.equals(loginUser.getRememberMe()) ? 7 * 24 * 60 * 60 : 60 * 60);
+        StpUtil.login(user.getId(), loginModel);
         
         loginLog.setUserId(user.getId());
         loginLog.setStatus(1);

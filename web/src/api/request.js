@@ -67,20 +67,6 @@ request.interceptors.response.use(
         })
       }
       return Promise.reject(new Error(res.message || 'Token无效'))
-    } else if (res.code === 500 && res.message && (res.message.includes('token') || res.message.includes('无效'))) {
-      // token 无效（后端返回 500 但消息包含 token 关键字）
-      if (!isRedirectingToLogin) {
-        isRedirectingToLogin = true
-        message.error('登录已过期，请重新登录')
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        router.push('/login').finally(() => {
-          setTimeout(() => {
-            isRedirectingToLogin = false
-          }, 1000)
-        })
-      }
-      return Promise.reject(new Error('Token无效'))
     } else {
       message.error(res.message || '请求失败')
       return Promise.reject(new Error(res.message || '请求失败'))
@@ -117,22 +103,8 @@ request.interceptors.response.use(
           })
         }
       } else if (status === 500) {
-        // 检查是否是 token 相关错误
-        if (data?.message && (data.message.includes('token') || data.message.includes('无效'))) {
-          if (!isRedirectingToLogin) {
-            isRedirectingToLogin = true
-            message.error('登录已过期，请重新登录')
-            localStorage.removeItem('token')
-            localStorage.removeItem('user')
-            router.push('/login').finally(() => {
-              setTimeout(() => {
-                isRedirectingToLogin = false
-              }, 1000)
-            })
-          }
-        } else {
-          message.error(data?.message || '服务器错误')
-        }
+        // 服务器异常不等于登录失效，不能因为普通接口报错清除本地登录态。
+        message.error(data?.message || '服务器错误')
       } else {
         message.error(data?.message || error.message || '网络错误')
       }

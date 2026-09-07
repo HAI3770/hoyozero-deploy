@@ -1,5 +1,9 @@
 <template>
   <div class="dashboard">
+    <div class="dashboard-header">
+      <div><h2>运维总览</h2><n-text depth="3">集中查看构建、交付和平台运行状态</n-text></div>
+      <n-button secondary @click="refreshDashboard" :loading="loading">刷新数据</n-button>
+    </div>
     <!-- 统计卡片 -->
     <n-grid :x-gap="16" :y-gap="16" :cols="4" responsive="screen">
       <n-gi>
@@ -175,8 +179,8 @@
       </n-gi>
     </n-grid>
     
-    <!-- 项目信息 -->
-    <n-card :bordered="false" style="margin-top: 16px;">
+    <!-- 项目信息与更新日志已移除 -->
+    <div v-if="false">
       <n-grid :x-gap="24" :y-gap="16" :cols="3" responsive="screen">
         <n-gi>
           <div class="info-section">
@@ -186,12 +190,11 @@
             <h3>平台信息</h3>
             <n-divider style="margin: 12px 0" />
             <n-space vertical size="small">
-              <n-text strong style="font-size: 16px; color: #18a058;">hoyozero 宏宇</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 企业级自动化部署平台</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 宏宇研发与运维</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 持续交付与自动化运维</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 安全、稳定、可观测</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 品牌：hoyozero 宏宇</n-text>
+              <n-text strong style="font-size: 16px; color: #18a058;">HoyoZero CI/CD</n-text>
+              <n-text depth="3" style="font-size: 13px;">• 轻量级持续集成与持续交付平台</n-text>
+              <n-text depth="3" style="font-size: 13px;">• 独立 Runner 执行构建任务</n-text>
+              <n-text depth="3" style="font-size: 13px;">• 支持 GitLab、Docker Registry 与 SSH 部署</n-text>
+              <n-text depth="3" style="font-size: 13px;">• 构建、部署、回滚全流程可追踪</n-text>
             </n-space>
           </div>
         </n-gi>
@@ -204,11 +207,11 @@
             <h3>项目功能</h3>
             <n-divider style="margin: 12px 0" />
             <n-space vertical size="small">
-              <n-text depth="3" style="font-size: 13px;">• 项目管理（Git配置、构建命令）</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 一键触发构建与部署</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 实时构建日志推送</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 服务器SSH管理与连接测试</n-text>
-              <n-text depth="3" style="font-size: 13px;">• 自动化部署流程</n-text>
+              <n-text depth="3" style="font-size: 13px;">• Git 分支构建与 Docker 镜像推送</n-text>
+              <n-text depth="3" style="font-size: 13px;">• Registry 版本管理与 Digest 追踪</n-text>
+              <n-text depth="3" style="font-size: 13px;">• SSH Docker Compose 部署与健康检查</n-text>
+              <n-text depth="3" style="font-size: 13px;">• 历史版本精确回滚</n-text>
+              <n-text depth="3" style="font-size: 13px;">• WebSocket 实时日志与操作审计</n-text>
             </n-space>
           </div>
         </n-gi>
@@ -222,14 +225,13 @@
             <n-divider style="margin: 12px 0" />
             <n-space vertical size="small">
               <n-text depth="3" style="font-size: 13px;"><strong>后端:</strong> Spring Boot 3 + MyBatis-Plus</n-text>
-              <n-text depth="3" style="font-size: 13px;"><strong>前端:</strong> Vue3 + Vite + Naive UI</n-text>
-              <n-text depth="3" style="font-size: 13px;"><strong>数据库:</strong> MySQL 8.0</n-text>
-              <n-text depth="3" style="font-size: 13px;"><strong>工具:</strong> JGit、JSch、ECharts</n-text>
+              <n-text depth="3" style="font-size: 13px;"><strong>前端:</strong> Vue 3 + Vite + Naive UI</n-text>
+              <n-text depth="3" style="font-size: 13px;"><strong>基础设施:</strong> MySQL 8 + Docker Compose</n-text>
+              <n-text depth="3" style="font-size: 13px;"><strong>流水线:</strong> GitLab + BuildKit + Registry + SSH</n-text>
             </n-space>
           </div>
         </n-gi>
       </n-grid>
-    </n-card>
     
     <!-- 更新日志 -->
     <n-card title="更新日志" :bordered="false" style="margin-top: 16px;">
@@ -338,8 +340,9 @@
       </n-timeline>
     </n-card>
     
-    <!-- 打赏支持 -->
-    <n-card :bordered="false" style="margin-top: 16px;">
+    </div>
+    <!-- 打赏支持已移除 -->
+    <n-card v-if="false" :bordered="false" style="margin-top: 16px;">
       <div class="donate-section">
         <div class="donate-header">
           <n-icon size="40" color="#f0a020" style="margin-bottom: 12px;">
@@ -365,14 +368,13 @@
         
         <div class="donate-footer">
           <n-text depth="3" style="font-size: 13px;">
-            💚 感谢每一位支持开源项目的朋友！
           </n-text>
         </div>
       </div>
     </n-card>
     
     <!-- 底部作者信息 -->
-    <div class="footer-author">
+    <div v-if="false" class="footer-author">
       <n-text depth="3" style="font-size: 12px;">
         平台信息：hoyozero 宏宇
       </n-text>
@@ -392,9 +394,6 @@ import {
   CloseCircleSharp,
   LogInSharp,
   LogOutSharp,
-  PersonSharp,
-  CubeSharp,
-  CodeSlashSharp,
   CafeSharp,
   ExtensionPuzzleSharp
 } from '@vicons/ionicons5'
@@ -402,6 +401,7 @@ import * as echarts from 'echarts'
 import { getBuildList, getStats, getBuildTrend, getStatusDistribution } from '@/api/build'
 import { getOperationLogList } from '@/api/log'
 import { getLoginLogList } from '@/api/log'
+import { getCicdStatusMeta } from '@/utils/cicdStatus'
 
 const router = useRouter()
 const loading = ref(false)
@@ -424,23 +424,11 @@ const recentLoginLogs = ref([])
 const logTabValue = ref('operation') // 日志tab默认显示操作日志
 
 const getStatusType = (status) => {
-  const map = {
-    'PENDING': 'default',
-    'RUNNING': 'info',
-    'SUCCESS': 'success',
-    'FAILED': 'error'
-  }
-  return map[status] || 'default'
+  return getCicdStatusMeta(status).type
 }
 
 const getStatusText = (status) => {
-  const map = {
-    'PENDING': '等待中',
-    'RUNNING': '运行中',
-    'SUCCESS': '成功',
-    'FAILED': '失败'
-  }
-  return map[status] || status
+  return getCicdStatusMeta(status).text
 }
 
 const viewDetail = (id) => {
@@ -460,13 +448,7 @@ const viewBuildDetail = (id) => {
 }
 
 const getStatusColor = (status) => {
-  const map = {
-    'PENDING': '#f0a020',
-    'RUNNING': '#2080f0',
-    'SUCCESS': '#18a058',
-    'FAILED': '#d03050'
-  }
-  return map[status] || '#999'
+  return getCicdStatusMeta(status).color
 }
 
 // 初始化构建趋势图表
@@ -683,17 +665,21 @@ const handleLogTabChange = (value) => {
 }
 
 onMounted(() => {
-  loadData()
-  loadRecentBuilds()
-  loadRecentOpLogs()
-  loadRecentLoginLogs()
+  refreshDashboard()
 })
+
+const refreshDashboard = async () => {
+  await Promise.all([loadData(), loadRecentBuilds(), loadRecentOpLogs(), loadRecentLoginLogs()])
+}
 </script>
 
 <style scoped>
 .dashboard {
   width: 100%;
 }
+
+.dashboard-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.dashboard-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
 
 .stat-card {
   transition: all 0.3s;

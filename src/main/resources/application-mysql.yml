@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/hoyozero_deploy?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
-    password: root
+    password: ${HOYOZERO_DB_ROOT_PASSWORD:}
   servlet:
     multipart:
       max-file-size: 100MB
@@ -14,6 +14,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 server:
   port: 8080
 
@@ -33,8 +37,9 @@ mybatis-plus:
 # Sa-Token配置
 sa-token:
   token-name: Authorization
-  timeout: 3600
-  active-timeout: 3600
+  # 默认会话有效期 7 天；登录接口会按“7天内免登录”选项覆盖为 7 天或 1 小时
+  timeout: 604800
+  active-timeout: 604800
   is-concurrent: true
   is-share: true
   token-style: random-64
@@ -43,7 +48,7 @@ sa-token:
 # 应用配置
 hoyozero:
   # 工作目录 (不设置则使用默认目录：Windows: D:\hoyozero-deploy, Linux: /home/hoyozero-deploy)
-  workspace: C:\hoyozero-deploy\deploy
+  workspace: ${HOYOZERO_WORKSPACE:/home/hoyozero-deploy}
   # Git克隆超时时间（秒）
   git-timeout: 300
   # 构建超时时间（秒）

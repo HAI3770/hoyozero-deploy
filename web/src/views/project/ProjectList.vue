@@ -1,5 +1,8 @@
 <template>
   <div class="project-list">
+    <div class="page-header">
+      <div><h2>项目管理</h2><span>管理项目配置、构建入口与交付环境</span></div>
+    </div>
     <div class="toolbar">
       <n-space vertical :size="16">
         <!-- 项目组筛选提示 -->
@@ -108,12 +111,12 @@
                     @positive-click="triggerBuildAction(project.id)"
                   >
                     <template #trigger>
-                      <n-button secondary size="small" type="primary">
+                  <n-button secondary size="small" type="primary">
                         <template #icon><n-icon><PlayCircleSharp /></n-icon></template>
                         立即构建
                       </n-button>
                     </template>
-                    确定要部署该项目吗？
+                    确定要开始构建项目「{{ project.name }}」吗？
                   </n-popconfirm>
                 </n-space>
 
@@ -122,6 +125,10 @@
                   <n-button secondary size="small" @click="showSettingsModal(project)">
                     <template #icon><n-icon><SettingsSharp /></n-icon></template>
                     设置
+                  </n-button>
+                  <n-button secondary size="small" type="success" @click="router.push(`/release/${project.id}`)">
+                    <template #icon><n-icon><RocketSharp /></n-icon></template>
+                    发布
                   </n-button>
                   <n-button secondary size="small" type="success" @click="router.push(`/project/edit/${project.id}`)">
                     <template #icon><n-icon><CreateSharp /></n-icon></template>
@@ -1659,6 +1666,10 @@ onUnmounted(() => {
 .project-list {
   width: 100%;
 }
+
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.page-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.page-header span { color: var(--n-text-color-3); font-size: 13px; }
 
 .toolbar {
   margin-bottom: 16px;

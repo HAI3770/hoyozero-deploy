@@ -23,6 +23,9 @@ public class User {
     private String phone;
     
     private Integer status;
+
+    @TableField(exist = false)
+    private Boolean rememberMe;
     
     @TableField(exist = false)
     private java.util.List<Role> roles;

@@ -20,7 +20,23 @@ services:
       retries: 10
       start_period: 30s
 
+  redis:
+    image: redis:7-alpine
+    container_name: hoyozero-deploy-redis
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - /data/hoyozero-deploy/redis:/data
+    networks:
+      - hoyozero-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   backend:
+    image: hoyozero-deploy-backend:v3
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,11 +49,20 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${HOYOZERO_DB_ROOT_PASSWORD:?HOYOZERO_DB_ROOT_PASSWORD is required}
       HOYOZERO_WORKSPACE: /app/workspace
+      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:-hoyozero-local-runner}
+      DIFY_BASE_URL: ${DIFY_BASE_URL:-}
+      DIFY_API_KEY: ${DIFY_API_KEY:-}
+      DIFY_APP_ID: ${DIFY_APP_ID:-}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - /data/hoyozero-deploy/workspace:/app/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - hoyozero-network
     healthcheck:
@@ -47,7 +72,34 @@ services:
       retries: 10
       start_period: 30s
 
+  runner:
+    image: quay.io/devtron/ci-runner:a4fc9044-138-33875
+    container_name: hoyozero-deploy-runner
+    restart: always
+    environment:
+      RUNNER_NAME: ${RUNNER_NAME:-docker-runner-1}
+      BACKEND_URL: http://backend:8080
+      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:-hoyozero-local-runner}
+      REGISTRY_USERNAME: ${REGISTRY_USERNAME:-}
+      REGISTRY_TOKEN: ${REGISTRY_TOKEN:-}
+      BUILD_TIMEOUT_SECONDS: ${BUILD_TIMEOUT_SECONDS:-600}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /data/hoyozero-deploy/workspace:/workspace
+      - /data/hoyozero-deploy/test-projects/gs-rest-service:/test-sources/gs-rest-service:ro
+      - ./runner/runner.py:/runner.py:ro
+    networks:
+      - hoyozero-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import socket;s=socket.create_connection((\"backend\",8080),3);s.close()'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    command: ["python", "/runner.py"]
+    entrypoint: []
+
   frontend:
+    image: hoyozero-deploy-frontend:v3
     build:
       context: .
       dockerfile: Dockerfile.frontend

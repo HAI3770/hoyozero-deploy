@@ -419,21 +419,21 @@ const docs = ref([
     icon: BookSharp,
     color: '#18A058',
     desc: '了解如何快速搭建和使用 hoyozero-deploy',
-    action: () => window.open("https://gitee.com/wushuiyong/walle-web/blob/master/README.md",'_blank')
+    action: () => window.open("https://gitee.com/hoyozero/hoyozero-deploy/blob/master/README.md",'_blank')
   },
   {
     title: '开发文档',
     icon: CodeSlashSharp,
     color: '#2080F0',
     desc: '查看详细的 API 文档和开发指南',
-    action: () => window.open("https://gitee.com/wushuiyong/walle-web/blob/master/README.md",'_blank')
+    action: () => window.open("https://gitee.com/hoyozero/hoyozero-deploy/blob/master/README.md",'_blank')
   },
   {
     title: '社区支持',
     icon: ChatbubblesSharp,
     color: '#F0A020',
     desc: '加入社区，获取帮助和分享经验',
-    action: () => window.open("https://gitee.com/wushuiyong/walle-web/blob/master/README.md",'_blank')
+    action: () => window.open("https://gitee.com/hoyozero/hoyozero-deploy/blob/master/README.md",'_blank')
   }
 ])
 
@@ -443,11 +443,11 @@ const goToDemo = () => {
 }
 
 const viewDocs = () => {
-  window.open("https://gitee.com/wushuiyong/walle-web/blob/master/README.md",'_blank')
+  window.open("https://gitee.com/hoyozero/hoyozero-deploy/blob/master/README.md",'_blank')
 }
 
 const goToGithub = () => {
-  window.open("https://gitee.com/wushuiyong/walle-web",'_blank')
+  window.open("https://gitee.com/hoyozero/hoyozero-deploy",'_blank')
 }
 </script>
 

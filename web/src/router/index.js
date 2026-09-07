@@ -52,6 +52,11 @@ const routes = [
         component: () => import('../views/build/BuildDetail.vue')
       },
       {
+        path: 'release/:projectId?',
+        name: 'ReleaseList',
+        component: () => import('../views/release/ReleaseList.vue')
+      },
+      {
         path: 'user',
         name: 'UserList',
         component: () => import('../views/user/UserList.vue')
@@ -105,7 +110,8 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   
   if (to.path === '/login') {
-    next()
+    // 已有本地会话时，访问登录地址直接回到仪表盘，避免返回/刷新时再次登录。
+    next(token ? '/dashboard' : undefined)
   } else {
     if (token) {
       next()

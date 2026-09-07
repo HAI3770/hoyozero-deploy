@@ -165,6 +165,18 @@
             <template #header>提示</template>
             构建命令和产物路径会根据项目类型自动填充，您也可以自定义修改
           </n-alert>
+          <n-divider>Docker 镜像配置</n-divider>
+          <n-grid :cols="2" :x-gap="24">
+            <n-form-item-gi label="Dockerfile 路径"><n-input v-model:value="formState.dockerfilePath" placeholder="Dockerfile" /></n-form-item-gi>
+            <n-form-item-gi label="构建上下文"><n-input v-model:value="formState.dockerContext" placeholder="." /></n-form-item-gi>
+            <n-form-item-gi label="Registry 地址"><n-input v-model:value="formState.registryUrl" placeholder="harbor.example.com" /></n-form-item-gi>
+            <n-form-item-gi label="Registry 用户名"><n-input v-model:value="formState.registryUsername" /></n-form-item-gi>
+            <n-form-item-gi label="Registry Token"><n-input v-model:value="formState.registryToken" type="password" show-password-on="click" /></n-form-item-gi>
+            <n-form-item-gi label="命名空间"><n-input v-model:value="formState.registryNamespace" placeholder="team" /></n-form-item-gi>
+            <n-form-item-gi label="镜像名称"><n-input v-model:value="formState.imageName" placeholder="app" /></n-form-item-gi>
+            <n-form-item-gi label="Tag 规则"><n-input v-model:value="formState.imageTagRule" placeholder="build-{buildNumber},git-{commit},latest" /></n-form-item-gi>
+          </n-grid>
+          <n-form-item label="构建平台"><n-input v-model:value="formState.buildPlatform" placeholder="linux/amd64" /></n-form-item>
         </div>
 
         <!-- 步骤4: 部署配置 -->
@@ -320,6 +332,7 @@ const formState = reactive({
   appPort: 8080,
   deployPath: '/www/wwwroot/',
   deployScript: ''
+  ,dockerfilePath: 'Dockerfile', dockerContext: '.', registryUrl: '', registryUsername: '', registryToken: '', registryNamespace: '', imageName: '', imageTagRule: 'build-{buildNumber},git-{commit},latest,{env}-latest', buildPlatform: 'linux/amd64'
 })
 
 // 表单验证规则
@@ -694,6 +707,7 @@ const loadProjectDetail = async () => {
       appPort: project.appPort != null ? project.appPort : 8080,
       deployPath: project.deployPath || '/www/wwwroot/',
       deployScript: project.deployScript || ''
+      ,dockerfilePath: project.dockerfilePath || 'Dockerfile', dockerContext: project.dockerContext || '.', registryUrl: project.registryUrl || '', registryUsername: project.registryUsername || '', registryToken: '', registryNamespace: project.registryNamespace || '', imageName: project.imageName || '', imageTagRule: project.imageTagRule || 'build-{buildNumber},git-{commit},latest,{env}-latest', buildPlatform: project.buildPlatform || 'linux/amd64'
     })
     
     // 更新构建命令和产物路径选项

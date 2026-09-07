@@ -76,6 +76,10 @@
               </template>
             </n-input>
           </n-form-item>
+
+          <n-form-item>
+            <n-checkbox v-model:checked="formValue.rememberMe">7天内免登录</n-checkbox>
+          </n-form-item>
           
           <n-form-item>
             <n-button
@@ -123,7 +127,8 @@ const loading = ref(false)
 
 const formValue = reactive({
   username: 'admin',
-  password: ''
+  password: '',
+  rememberMe: true
 })
 
 const rules = {

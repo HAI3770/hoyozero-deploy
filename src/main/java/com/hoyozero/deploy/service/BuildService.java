@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hoyozero.deploy.entity.Build;
 import com.hoyozero.deploy.entity.Project;
+import com.hoyozero.deploy.entity.Release;
 import com.hoyozero.deploy.mapper.BuildMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,12 @@ public class BuildService extends ServiceImpl<BuildMapper, Build> {
     @Autowired
     @Lazy
     private BuildExecutorService buildExecutorService;
+    @Autowired
+    @Lazy
+    private RunnerQueueService runnerQueueService;
+
+    @Autowired
+    private ReleaseService releaseService;
     
     @Autowired
     private ProjectServerService projectServerService;
@@ -50,9 +57,15 @@ public class BuildService extends ServiceImpl<BuildMapper, Build> {
         build.setStatus("PENDING");
         build.setTriggerBy(StpUtil.getLoginIdAsString());
         this.save(build);
+        Release release = releaseService.createFromBuild(build.getId(), build.getTriggerBy());
+        release.setStatus("BUILDING");
+        release.setStartTime(LocalDateTime.now());
+        releaseService.updateById(release);
+        build.setStage("BUILD");
+        this.updateById(build);
         
         // 异步执行构建（通过外部Service调用，确保异步生效）
-        buildExecutorService.executeBuild(build.getId());
+        runnerQueueService.enqueue(build.getId());
         
         return build.getId();
     }

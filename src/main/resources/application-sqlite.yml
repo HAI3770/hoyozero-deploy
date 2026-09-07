@@ -20,6 +20,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 server:
   port: 8080
 
@@ -40,8 +44,8 @@ mybatis-plus:
 # Sa-Token配置
 sa-token:
   token-name: Authorization
-  timeout: 3600
-  active-timeout: 3600
+  timeout: 604800
+  active-timeout: 604800
   is-concurrent: true
   is-share: true
   token-style: random-64

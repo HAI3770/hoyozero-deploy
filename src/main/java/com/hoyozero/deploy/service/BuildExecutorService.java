@@ -50,6 +50,9 @@ public class BuildExecutorService {
     @Autowired
     private WebhookNotificationService webhookNotificationService;
 
+    @Autowired
+    private ReleaseService releaseService;
+
     @Value("${hoyozero.workspace:}")
     private String workspace;
 
@@ -61,6 +64,9 @@ public class BuildExecutorService {
      */
     @Async("buildExecutor")
     public void executeBuild(Long buildId) {
+        if (dockerBuildService.execute(buildId)) {
+            return;
+        }
         Build build = buildService.getById(buildId);
         Project project = projectService.getById(build.getProjectId());
 
@@ -211,12 +217,14 @@ public class BuildExecutorService {
             BuildLogSocket.sendMessage(buildId.toString(), "[错误] " + e.getMessage());
 
             build.setStatus("FAILED");
+            build.setFailureReason(e.getMessage());
         } finally {
             // 更新构建记录
             build.setEndTime(LocalDateTime.now());
             build.setDuration(ChronoUnit.SECONDS.between(build.getStartTime(), build.getEndTime()));
             build.setLog(logBuilder.toString());
             buildService.updateById(build);
+            releaseService.markBuildFinished(buildId, "SUCCESS".equals(build.getStatus()), build.getFailureReason());
 
             try {
                 webhookNotificationService.notifyBuildStatus(build, project);
@@ -225,6 +233,9 @@ public class BuildExecutorService {
             }
         }
     }
+
+    @Autowired
+    private DockerBuildService dockerBuildService;
 
     /**
      * 创建工作目录
@@ -477,6 +488,7 @@ public class BuildExecutorService {
             build.setDuration(ChronoUnit.SECONDS.between(build.getStartTime(), build.getEndTime()));
             build.setLog(logBuilder.toString());
             buildService.updateById(build);
+            releaseService.finishAutoRollback(buildId, build.getStatus(), logBuilder.toString(), build.getFailureReason());
         }
     }
 
@@ -627,6 +639,7 @@ public class BuildExecutorService {
             build.setDuration(ChronoUnit.SECONDS.between(build.getStartTime(), build.getEndTime()));
             build.setLog(logBuilder.toString());
             buildService.updateById(build);
+            releaseService.finishAutoRollback(buildId, build.getStatus(), logBuilder.toString(), build.getFailureReason());
         }
     }
 

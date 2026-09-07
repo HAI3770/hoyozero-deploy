@@ -3,6 +3,28 @@ workspace/
 *.log
 *.jar
 *.war
+*.class
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials*
+secrets/
+
+# Local data and generated files
+data/
+backups/
+logs/
+*.sql.gz
 
 # IDE
 .idea/
@@ -20,3 +42,5 @@ dist/
 mvnw
 mvnw.cmd
 .env
+.qoder
+.vscode

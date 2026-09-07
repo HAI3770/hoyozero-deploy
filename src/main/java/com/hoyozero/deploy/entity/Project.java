@@ -45,6 +45,23 @@ public class Project {
 
     private Long groupId;
 
+    /** Docker/CI 配置 */
+    private String dockerfilePath;
+    private String dockerContext;
+    private String registryUrl;
+    private String registryUsername;
+    private String registryToken;
+    private String registryNamespace;
+    private String imageName;
+    private String imageTagRule;
+    private String buildPlatform;
+    private Integer autoPush;
+    private String webhookToken;
+    private Integer deployEnabled;
+    private String composePath;
+    private String composeService;
+    private String healthCheckUrl;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

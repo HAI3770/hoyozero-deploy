@@ -77,17 +77,6 @@
                 {{ isFullscreen ? '退出全屏' : '全屏' }}
               </n-tooltip>
 
-              <n-tooltip placement="bottom">
-                <template #trigger>
-                  <n-button text class="icon-button" @click="openGithub">
-                    <n-icon size="20">
-                      <LogoGithub />
-                    </n-icon>
-                  </n-button>
-                </template>
-                查看源码
-              </n-tooltip>
-
               <n-dropdown :options="userOptions" @select="handleUserAction">
                 <div class="user-info">
                   <n-avatar round size="small" :style="{ background: '#18a058' }">
@@ -106,7 +95,6 @@
       </n-layout-content>
     </n-layout>
   </n-layout>
-  
   <!-- 顶部菜单布局 -->
   <n-layout v-else class="layout">
     <n-layout-header bordered class="header header-with-menu">
@@ -163,17 +151,6 @@
               {{ isFullscreen ? '退出全屏' : '全屏' }}
             </n-tooltip>
 
-            <n-tooltip placement="bottom">
-              <template #trigger>
-                <n-button text class="icon-button" @click="openGithub">
-                  <n-icon size="20">
-                    <LogoGithub />
-                  </n-icon>
-                </n-button>
-              </template>
-              查看源码
-            </n-tooltip>
-
             <n-dropdown :options="userOptions" @select="handleUserAction">
               <div class="user-info">
                 <n-avatar round size="small" :style="{ background: '#18a058' }">
@@ -191,6 +168,7 @@
       <router-view />
     </n-layout-content>
   </n-layout>
+  <DifyAssistant />
 </template>
 
 <script setup>
@@ -210,7 +188,6 @@ import {
   MenuSharp,
   ExpandSharp,
   ContractSharp,
-  LogoGithub,
   ExtensionPuzzleSharp,
   MoonSharp,
   SunnySharp,
@@ -221,6 +198,7 @@ import {
 } from '@vicons/ionicons5'
 import { logout } from '@/api/auth'
 import { getUserMenus } from '@/api/menu'
+import DifyAssistant from '@/components/DifyAssistant.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -265,6 +243,10 @@ const loadUserMenus = async () => {
   try {
     const menus = await getUserMenus()
     menuOptions.value = convertToMenuOptions(menus)
+    // 发布模块兼容旧菜单数据：即使数据库尚未写入菜单，也保证 CD 入口可见。
+    if (!menuOptions.value.some(item => item.key === '/release')) {
+      menuOptions.value.push({ label: '持续交付', key: '/release', icon: renderIcon('RocketSharp') })
+    }
   } catch (error) {
     console.error('加载菜单失败', error)
   }
@@ -351,11 +333,6 @@ const toggleFullscreen = () => {
 // 监听全屏状态变化
 const handleFullscreenChange = () => {
   isFullscreen.value = !!document.fullscreenElement
-}
-
-// 打开 GitHub
-const openGithub = () => {
-  window.open('https://gitee.com/wushuiyong/walle-web', '_blank')
 }
 
 // 主题切换

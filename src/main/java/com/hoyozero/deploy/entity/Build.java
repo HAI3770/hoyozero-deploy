@@ -27,6 +27,17 @@ public class Build {
 
     private String triggerBy;
 
+    private Integer buildNumber;
+    private String gitUrl;
+    private String gitBranch;
+    private String gitCommit;
+    private String image;
+    private String imageTag;
+    private String imageDigest;
+    private String stage;
+    private String runnerName;
+    private String failureReason;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

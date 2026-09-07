@@ -38,7 +38,7 @@ public class WebhookController {
     @Value("${hoyozero.webhook.secret:}")
     private String webhookSecret;
 
-    @PostMapping("/trigger")
+    @PostMapping({"/trigger", "/gitlab"})
     public Result<Map<String, Object>> trigger(@RequestHeader Map<String, String> headers,
                                               @RequestBody String rawBody) {
         try {
@@ -59,6 +59,12 @@ public class WebhookController {
             if (project == null) {
                 return Result.error("未找到对应项目: " + projectName);
             }
+            if ("gitlab".equals(source) && project.getWebhookToken() != null && !project.getWebhookToken().isBlank()) {
+                String token = headerIgnoreCase(headers, "X-Gitlab-Token");
+                if (token == null || !constantTimeEquals(token, project.getWebhookToken())) {
+                    return Result.error(401, "GitLab Webhook Token 校验失败");
+                }
+            }
 
             if (branch != null && !runnerService.matchesBranch(project.getBranch(), branch)) {
                 return Result.success(Map.of(
@@ -67,6 +73,11 @@ public class WebhookController {
                         "source", source,
                         "branch", branch
                 ));
+            }
+
+            String sha = payload.get("checkout_sha") == null ? null : payload.get("checkout_sha").toString();
+            if (sha != null && buildService.lambdaQuery().eq(com.hoyozero.deploy.entity.Build::getProjectId, project.getId()).eq(com.hoyozero.deploy.entity.Build::getGitCommit, sha).count() > 0) {
+                return Result.success(Map.of("message", "相同 Commit 已触发过构建", "projectId", project.getId()));
             }
 
             Long buildId = buildService.triggerBuild(project.getId());
@@ -90,27 +101,27 @@ public class WebhookController {
         String source = detectSource(headers, null);
         String signature = null;
         if ("github".equals(source)) {
-            signature = headers.get("X-Hub-Signature-256");
+            signature = headerIgnoreCase(headers, "X-Hub-Signature-256");
             if (signature != null && signature.startsWith("sha256=")) {
                 return constantTimeEquals(signature.substring(7), toHex(hmacSha256(rawBody, webhookSecret)));
             }
-            signature = headers.get("X-Hub-Signature");
+            signature = headerIgnoreCase(headers, "X-Hub-Signature");
             if (signature != null && signature.startsWith("sha1=")) {
                 return constantTimeEquals(signature.substring(5), toHex(hmacSha1(rawBody, webhookSecret)));
             }
         }
         if ("gitlab".equals(source)) {
-            signature = headers.get("X-Gitlab-Token");
+            signature = headerIgnoreCase(headers, "X-Gitlab-Token");
             if (signature != null) {
                 return constantTimeEquals(signature, webhookSecret);
             }
         }
         if ("gitee".equals(source)) {
-            signature = headers.get("X-Gitee-Token");
+            signature = headerIgnoreCase(headers, "X-Gitee-Token");
             if (signature != null) {
                 return constantTimeEquals(signature, webhookSecret);
             }
-            String timestamp = headers.get("X-Gitee-Timestamp");
+            String timestamp = headerIgnoreCase(headers, "X-Gitee-Timestamp");
             if (timestamp != null) {
                 String raw = timestamp + "\n" + rawBody;
                 return constantTimeEquals(toBase64(hmacSha256(raw, webhookSecret)), signature);
@@ -120,17 +131,23 @@ public class WebhookController {
         return true;
     }
 
+    private String headerIgnoreCase(Map<String, String> headers, String name) {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            if (name.equalsIgnoreCase(entry.getKey())) return entry.getValue();
+        }
+        return null;
+    }
+
     private String detectSource(Map<String, String> headers, Map<String, Object> payload) {
         if (headers != null) {
-            String event = headers.getOrDefault("X-GitHub-Event", headers.getOrDefault("X-Gitlab-Event", headers.getOrDefault("X-Gitee-Event", ""))).trim();
-            if (event.equalsIgnoreCase("push") || headers.containsKey("X-GitHub-Event")) {
-                return "github";
-            }
             if (headers.containsKey("X-Gitlab-Event") || headers.containsKey("X-Gitlab-Token")) {
                 return "gitlab";
             }
             if (headers.containsKey("X-Gitee-Event") || headers.containsKey("X-Gitee-Token") || headers.containsKey("X-Gitee-Timestamp")) {
                 return "gitee";
+            }
+            if (headers.containsKey("X-GitHub-Event")) {
+                return "github";
             }
         }
         if (payload == null) {

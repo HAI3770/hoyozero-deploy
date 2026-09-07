@@ -1,5 +1,9 @@
 <template>
   <div class="build-list">
+    <div class="page-header">
+      <div><h2>构建历史</h2><span>查看构建状态、构建产物与执行详情</span></div>
+      <n-text depth="3">自动刷新：5 秒</n-text>
+    </div>
     <div class="toolbar">
       <n-space>
         <n-select
@@ -41,12 +45,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, h } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useMessage, NButton, NSpace, NTag, NPopconfirm } from 'naive-ui'
 import { RefreshSharp, EyeSharp, TrashSharp } from '@vicons/ionicons5'
 import { getBuildList, deleteBuild } from '@/api/build'
 import { getProjectList } from '@/api/project'
+import { getCicdStatusMeta } from '@/utils/cicdStatus'
 
 const router = useRouter()
 const route = useRoute()
@@ -177,23 +182,11 @@ const columns = [
 ]
 
 const getStatusType = (status) => {
-  const map = {
-    'PENDING': 'default',
-    'RUNNING': 'info',
-    'SUCCESS': 'success',
-    'FAILED': 'error'
-  }
-  return map[status] || 'default'
+  return getCicdStatusMeta(status).type
 }
 
 const getStatusText = (status) => {
-  const map = {
-    'PENDING': '等待中',
-    'RUNNING': '运行中',
-    'SUCCESS': '成功',
-    'FAILED': '失败'
-  }
-  return map[status] || status
+  return getCicdStatusMeta(status).text
 }
 
 const loadData = async () => {
@@ -266,13 +259,28 @@ const handleDelete = async (id) => {
   }
 }
 
+let refreshTimer
+let loadingRequest = false
+
+const refreshData = async () => {
+  if (loadingRequest) return
+  loadingRequest = true
+  try { await loadData() } finally { loadingRequest = false }
+}
+
 onMounted(() => {
   if (route.params.projectId) {
     selectedProjectId.value = parseInt(route.params.projectId)
   }
   
   loadProjects()
-  loadData()
+  refreshData()
+  // 构建执行由 Runner 异步完成，页面打开期间自动轮询，避免必须手动点击刷新。
+  refreshTimer = window.setInterval(refreshData, 5000)
+})
+
+onUnmounted(() => {
+  if (refreshTimer) window.clearInterval(refreshTimer)
 })
 </script>
 
@@ -280,6 +288,10 @@ onMounted(() => {
 .build-list {
   width: 100%;
 }
+
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.page-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.page-header span { color: var(--n-text-color-3); font-size: 13px; }
 
 .toolbar {
   margin-bottom: 16px;

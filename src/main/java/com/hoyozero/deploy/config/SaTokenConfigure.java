@@ -18,6 +18,10 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/api/auth/login",
+                        "/api/webhook/gitlab",
+                        "/internal/runner/**",
+                        "/actuator/health",
+                        "/actuator/health/**",
                         "/ws/**",
                         "/error",
                         "/",
