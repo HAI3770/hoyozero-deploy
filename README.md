@@ -40,7 +40,7 @@ hoyozero-deploy 面向需要自行管理代码构建、服务器部署和发布�
 ### 1. 获取代码
 
 ```bash
-git clone <你的 GitHub 或 Gitee 仓库地址>
+git clone https://github.com/HAI3770/hoyozero-deploy.git
 cd hoyozero-deploy
 ```
 
