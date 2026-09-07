@@ -23,7 +23,7 @@
           <n-input v-model:value="formState.username" :disabled="!!editId" />
         </n-form-item>
         <n-form-item label="密码" path="password">
-          <n-input v-model:value="formState.password" type="password" show-password-on="click" :placeholder="editId ? '不修改请留空' : '默认密码123456'" />
+          <n-input v-model:value="formState.password" type="password" show-password-on="click" :placeholder="editId ? '不修改请留空' : '请设置初始密码'" />
         </n-form-item>
         <n-form-item label="昵称" path="nickname">
           <n-input v-model:value="formState.nickname" />

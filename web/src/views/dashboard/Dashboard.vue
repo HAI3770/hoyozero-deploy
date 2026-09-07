@@ -1,8 +1,15 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-header">
-      <div><h2>运维总览</h2><n-text depth="3">集中查看构建、交付和平台运行状态</n-text></div>
-      <n-button secondary @click="refreshDashboard" :loading="loading">刷新数据</n-button>
+      <div>
+        <div class="eyebrow">HOYOZERO · 宏宇持续交付平台</div>
+        <h2>运维总览</h2>
+        <n-text depth="3">集中查看构建、交付和平台运行状态</n-text>
+      </div>
+      <n-space align="center">
+        <n-tag round type="success" :bordered="false">系统在线</n-tag>
+        <n-button secondary @click="refreshDashboard" :loading="loading">刷新数据</n-button>
+      </n-space>
     </div>
     <!-- 统计卡片 -->
     <n-grid :x-gap="16" :y-gap="16" :cols="4" responsive="screen">
@@ -356,12 +363,12 @@
         
         <div class="donate-qrcode">
           <div class="qrcode-item">
-            <img src="@/assets/image/wechat.jpg" alt="微信赞赏" class="qrcode-img" />
+            <div class="qrcode-placeholder" aria-hidden="true"></div>
             <n-text strong style="margin-top: 12px; font-size: 15px; color: #07c160;">微信赞赏</n-text>
           </div>
           
           <div class="qrcode-item">
-            <img src="@/assets/image/ali.jpg" alt="支付宝赞赏" class="qrcode-img" />
+            <div class="qrcode-placeholder" aria-hidden="true"></div>
             <n-text strong style="margin-top: 12px; font-size: 15px; color: #1677ff;">支付宝赞赏</n-text>
           </div>
         </div>
@@ -674,21 +681,33 @@ const refreshDashboard = async () => {
 </script>
 
 <style scoped>
-.dashboard {
-  width: 100%;
-}
+.dashboard { width: 100%; max-width: 1600px; margin: 0 auto; }
 
-.dashboard-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.dashboard-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.dashboard-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; padding: 8px 2px; }
+.dashboard-header h2 { margin: 4px 0 6px; font-size: clamp(24px, 3vw, 32px); font-weight: 700; letter-spacing: -0.02em; }
+.eyebrow { color: #18a058; font-size: 12px; font-weight: 700; letter-spacing: .12em; }
 
 .stat-card {
-  transition: all 0.3s;
+  min-height: 116px;
+  border: 1px solid rgba(24, 160, 88, .08);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
 .stat-card:hover {
   cursor: pointer;
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  border-color: rgba(24, 160, 88, .22);
+  box-shadow: 0 12px 28px rgba(18, 38, 28, .09);
+}
+
+:deep(.n-card) { border-radius: 14px; box-shadow: 0 6px 24px rgba(18, 38, 28, .045); }
+:deep(.n-card-header) { font-weight: 650; }
+:deep(.n-list-item) { padding-left: 4px; padding-right: 4px; }
+
+@media (max-width: 680px) {
+  .dashboard-header { align-items: flex-start; gap: 16px; flex-direction: column; }
+  .dashboard-header :deep(.n-space) { width: 100%; justify-content: space-between; }
+  .eyebrow { font-size: 10px; }
 }
 
 /* 快捷入口卡片 */

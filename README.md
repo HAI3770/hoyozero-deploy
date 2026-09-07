@@ -48,11 +48,17 @@ cd hoyozero-deploy
 
 ### 2. 创建本地配置
 
-`.env` 只保存在部署服务器上，不要提交到 Git：
+复制示例配置后填写强密码。`.env` 只保存在部署服务器上，不要提交到 Git：
+
+```bash
+cp .env.example .env
+```
 
 ```dotenv
 HOYOZERO_DB_ROOT_PASSWORD=请填写强密码
 HOYOZERO_RUNNER_TOKEN=请填写随机令牌
+HOYOZERO_INITIAL_ADMIN_USERNAME=admin
+HOYOZERO_INITIAL_ADMIN_PASSWORD=请填写管理员强密码
 
 # 可选：接入 Dify 智能助手
 DIFY_BASE_URL=http://your-dify-host:8060
@@ -64,7 +70,11 @@ REGISTRY_USERNAME=
 REGISTRY_TOKEN=
 ```
 
-请使用强密码和随机令牌，并通过服务器 Secret、环境变量或权限严格的 `.env` 文件管理敏感配置。
+首次启动时会自动创建该管理员、平台角色和完整菜单权限。请使用强密码和随机令牌，并通过服务器 Secret、环境变量或权限严格的 `.env` 文件管理敏感配置。
+
+`HOYOZERO_DB_ROOT_PASSWORD`、`HOYOZERO_RUNNER_TOKEN` 和 `HOYOZERO_INITIAL_ADMIN_PASSWORD` 为必填项。`docker compose` 会在启动前检查，缺少任意一项即停止，避免使用内置默认凭据。
+
+全新安装只会执行 `doc/hoyozero_deploy.sql` 与管理员初始化脚本；`doc/migration-*.sql` 仅供从历史版本升级时按实际版本选择执行，首次部署不要手工执行它们。
 
 ### 3. 构建并启动
 
@@ -72,6 +82,8 @@ REGISTRY_TOKEN=
 docker compose up --build -d
 docker compose ps
 ```
+
+后端和前端镜像均会在 Docker 内从仓库源码构建；首次构建会下载 Maven 和 npm 依赖，耗时会比后续构建更长。
 
 看到 `mysql`、`redis`、`backend`、`runner`、`frontend` 均为 `running`，且健康检查通过后即可访问：
 

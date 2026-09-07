@@ -1,0 +1,13 @@
+.git/
+.env
+.env.*
+!.env.example
+target/
+web/node_modules/
+web/dist/
+website/node_modules/
+website/dist/
+data/
+backups/
+logs/
+src/main/resources/static/

@@ -1,1 +1,0 @@
-import{r}from"./_plugin-vue_export-helper-CwxF_alg.js";const t=e=>r.get("/user/list",{params:e}),u=e=>r.post("/user",e),n=e=>r.put("/user",e),a=e=>r.delete(`/user/${e}`),o=()=>r.get("/user/current"),p=e=>r.put("/user/profile",e),d=e=>r.put("/user/password",e);export{t as a,u as b,p as c,a as d,d as e,o as g,n as u};

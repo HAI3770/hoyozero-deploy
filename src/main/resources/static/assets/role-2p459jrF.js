@@ -1,1 +1,0 @@
-import{r as t}from"./_plugin-vue_export-helper-CZSsPsTd.js";const o=e=>t.get("/role/list",{params:e}),l=()=>t.get("/role/all"),s=e=>t.post("/role",e),a=e=>t.put("/role",e),n=e=>t.delete(`/role/${e}`);export{o as a,s as b,n as d,l as g,a as u};

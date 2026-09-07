@@ -66,6 +66,8 @@ const send = async (preset) => {
   } finally { loading.value = false; await scrollToBottom() }
 }
 const clearConversation = () => { messages.value = []; conversationId.value = '' }
+const openPanel = () => { open.value = true }
+defineExpose({ openPanel })
 watch(open, async (value) => {
   if (!value) return
   try { overview.value = await getAssistantOverview() } catch (_) { overview.value = null }

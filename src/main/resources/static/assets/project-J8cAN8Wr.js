@@ -1,1 +1,0 @@
-import{r as t}from"./_plugin-vue_export-helper-BL0wINKJ.js";const s=e=>t.get("/project/list",{params:e}),c=e=>t.get(`/project/${e}`),n=e=>t.post("/project",e),j=e=>t.put("/project",e),p=e=>t.delete(`/project/${e}`),a=e=>t.get(`/project/${e}/members`),u=(e,r)=>t.post(`/project/${e}/members`,{members:r});export{c as a,n as b,u as c,p as d,a as e,s as g,j as u};

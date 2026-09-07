@@ -25,6 +25,7 @@ data/
 backups/
 logs/
 *.sql.gz
+src/main/resources/static/
 
 # IDE
 .idea/

@@ -1,1 +1,0 @@
-import{r as t}from"./_plugin-vue_export-helper-CwxF_alg.js";const s=e=>t.get("/project/list",{params:e}),c=e=>t.get(`/project/${e}`),n=e=>t.post("/project",e),j=e=>t.put("/project",e),p=e=>t.delete(`/project/${e}`),a=e=>t.get(`/project/${e}/members`),u=(e,r)=>t.post(`/project/${e}/members`,{members:r});export{c as a,a as b,n as c,p as d,u as e,s as g,j as u};

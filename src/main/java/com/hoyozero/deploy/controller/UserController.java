@@ -79,10 +79,10 @@ public class UserController {
         User user = new User();
         user.setUsername((String) params.get("username"));
 
-        // MD5加密密码
+        // 新用户必须显式设置密码，禁止使用公开的弱默认密码。
         String password = (String) params.get("password");
         if (password == null || password.trim().isEmpty()) {
-            password = "123456"; // 默认密码
+            return Result.error("请为新用户设置密码");
         }
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
 

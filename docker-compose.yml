@@ -6,11 +6,14 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${HOYOZERO_DB_ROOT_PASSWORD:?HOYOZERO_DB_ROOT_PASSWORD is required}
       MYSQL_DATABASE: hoyozero_deploy
+      HOYOZERO_INITIAL_ADMIN_USERNAME: ${HOYOZERO_INITIAL_ADMIN_USERNAME:-admin}
+      HOYOZERO_INITIAL_ADMIN_PASSWORD: ${HOYOZERO_INITIAL_ADMIN_PASSWORD:?HOYOZERO_INITIAL_ADMIN_PASSWORD is required for a new installation}
     ports:
       - "3308:3306"
     volumes:
       - /data/hoyozero-deploy/mysql:/var/lib/mysql
       - ./doc/hoyozero_deploy.sql:/docker-entrypoint-initdb.d/01-hoyozero-deploy.sql:ro
+      - ./doc/02-init-hoyozero.sh:/docker-entrypoint-initdb.d/02-init-hoyozero.sh:ro
     networks:
       - hoyozero-network
     healthcheck:
@@ -49,7 +52,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${HOYOZERO_DB_ROOT_PASSWORD:?HOYOZERO_DB_ROOT_PASSWORD is required}
       HOYOZERO_WORKSPACE: /app/workspace
-      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:-hoyozero-local-runner}
+      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:?HOYOZERO_RUNNER_TOKEN is required}
       DIFY_BASE_URL: ${DIFY_BASE_URL:-}
       DIFY_API_KEY: ${DIFY_API_KEY:-}
       DIFY_APP_ID: ${DIFY_APP_ID:-}
@@ -79,7 +82,7 @@ services:
     environment:
       RUNNER_NAME: ${RUNNER_NAME:-docker-runner-1}
       BACKEND_URL: http://backend:8080
-      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:-hoyozero-local-runner}
+      HOYOZERO_RUNNER_TOKEN: ${HOYOZERO_RUNNER_TOKEN:?HOYOZERO_RUNNER_TOKEN is required}
       REGISTRY_USERNAME: ${REGISTRY_USERNAME:-}
       REGISTRY_TOKEN: ${REGISTRY_TOKEN:-}
       BUILD_TIMEOUT_SECONDS: ${BUILD_TIMEOUT_SECONDS:-600}
