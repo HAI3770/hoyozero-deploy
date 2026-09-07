@@ -15,6 +15,35 @@
 */
 
 SET NAMES utf8mb4;
+CREATE TABLE IF NOT EXISTS `t_runner_queue` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `build_id` bigint NOT NULL,
+  `status` varchar(32) NOT NULL DEFAULT 'PENDING',
+  `runner_name` varchar(128) DEFAULT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `claim_time` datetime DEFAULT NULL,
+  `finish_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_runner_queue_status` (`status`),
+  KEY `idx_runner_queue_build_id` (`build_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `t_deployment` (
+  `id` bigint NOT NULL,
+  `project_id` bigint DEFAULT NULL,
+  `environment` varchar(64) DEFAULT NULL,
+  `server_id` bigint DEFAULT NULL,
+  `service_name` varchar(128) DEFAULT NULL,
+  `old_image` varchar(512) DEFAULT NULL,
+  `new_image` varchar(512) DEFAULT NULL,
+  `image_digest` varchar(256) DEFAULT NULL,
+  `status` varchar(64) DEFAULT NULL,
+  `deployment_log` text,
+  `operate_by` varchar(64) DEFAULT NULL,
+  `deployment_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_deployment_project` (`project_id`),
+  KEY `idx_deployment_time` (`deployment_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -36,6 +65,17 @@ CREATE TABLE `t_build`  (
   INDEX `project_id`(`project_id` ASC) USING BTREE,
   CONSTRAINT `t_build_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `t_project` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 2004111057060016130 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '构建记录表' ROW_FORMAT = Dynamic;
+ALTER TABLE `t_build`
+  ADD COLUMN `build_number` int NULL DEFAULT NULL,
+  ADD COLUMN `git_url` varchar(512) NULL DEFAULT NULL,
+  ADD COLUMN `git_branch` varchar(128) NULL DEFAULT NULL,
+  ADD COLUMN `git_commit` varchar(128) NULL DEFAULT NULL,
+  ADD COLUMN `image` varchar(512) NULL DEFAULT NULL,
+  ADD COLUMN `image_tag` varchar(256) NULL DEFAULT NULL,
+  ADD COLUMN `image_digest` varchar(256) NULL DEFAULT NULL,
+  ADD COLUMN `stage` varchar(128) NULL DEFAULT NULL,
+  ADD COLUMN `runner_name` varchar(128) NULL DEFAULT NULL,
+  ADD COLUMN `failure_reason` text NULL;
 
 -- ----------------------------
 -- Records of t_build
